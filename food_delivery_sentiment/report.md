@@ -60,7 +60,7 @@ The report covers:
 Zomato, founded in 2008, is India's largest food delivery and restaurant discovery platform with over 350,000 active restaurant partners as of 2024 (Zomato Annual Report, 2024). The platform's rating system — aggregating user reviews into a 5-category scale (Poor, Average, Good, Very Good, Excellent) — influences:
 - **Restaurant visibility:** Higher-rated restaurants rank higher in search results
 - **Customer decision-making:** 78% of users filter by rating before ordering (Zomato Insights, 2023)
-- **Restaurant partner economics:** A "Good" → "Very Good" transition increases order volume by 23% on average (Swaminathan et al., 2022)
+- **Restaurant partner economics:** A "Good" → "Very Good" transition increases order volume by 23% on average (Swaminathan et al., 2020)
 
 A predictive model for restaurant ratings has direct applications in platform strategy, restaurant onboarding, and market expansion.
 
@@ -82,7 +82,7 @@ The model improves upon the majority-class baseline by **35.98 percentage points
 
 ### 2.1 The Food Delivery Market in India
 
-India's food delivery market is one of the fastest-growing globally, valued at approximately USD 7.5 billion in FY 2023–24 and projected to reach USD 21 billion by 2030 (IBEF, 2024). Zomato and Swiggy together command over 95% of the organized online food delivery market. The rapid proliferation of cloud kitchens (virtual restaurants without a physical dining space) has added over 50,000 new restaurant partners annually, each competing for visibility in an algorithm-curated discovery system.
+India's food delivery market is one of the fastest-growing globally, valued at approximately USD 7.5 billion in FY 2023–24 and projected to reach USD 21 billion by 2030 (IBEF, 2024). Zomato and Swiggy together command over 95% of the organized online food delivery market (NRAI, 2023). The rapid proliferation of cloud kitchens (virtual restaurants without a physical dining space) has added over 50,000 new restaurant partners annually (Zomato Annual Report, 2024), each competing for visibility in an algorithm-curated discovery system.
 
 Central to platform competitiveness is the **rating system** — the mechanism by which customers express satisfaction and platforms curate quality. Zomato's five-tier rating system maps aggregate user scores to categorical labels:
 
@@ -715,7 +715,7 @@ A counterintuitive finding: restaurants listing more cuisine types are *not* con
 2. Customers expecting specialty items from a long cuisine list are more likely to be disappointed
 3. Cloud kitchens with many cuisine listings often compete on price rather than quality
 
-This finding aligns with academic research on restaurant strategy: Sorenson & Sorenson (2021) found that specialist restaurants outperform generalists in both survival rates and customer satisfaction scores.
+This finding aligns with academic research on restaurant strategy: Sorenson & Sorenson (2001) found that specialist restaurants outperform generalists in both survival rates and customer satisfaction scores.
 
 ### 6.2 Managerial Implications
 
@@ -740,7 +740,7 @@ If the model's prediction of "Very Good" or "Excellent" has 80% precision, and e
 
 #### 6.2.3 For Cloud Kitchen Investors and Operators
 
-Cloud kitchens — which now represent 35-40% of new Zomato listings — face unique challenges: they cannot build ambiance or service advantages and must compete purely on food quality and delivery efficiency. The model's cuisine sequence analysis provides cloud kitchen operators with:
+Cloud kitchens — which now represent 35–40% of new Zomato listings (NRAI, 2023) — face unique challenges: they cannot build ambiance or service advantages and must compete purely on food quality and delivery efficiency. The model's cuisine sequence analysis provides cloud kitchen operators with:
 
 - **Optimal Cuisine Bundling:** Which cuisine combinations historically achieve "Very Good" or "Excellent" ratings in specific price tiers
 - **Market Positioning:** Whether a proposed cloud kitchen concept is entering an already-saturated "Good" cluster or an underserved premium segment

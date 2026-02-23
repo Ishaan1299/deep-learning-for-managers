@@ -696,7 +696,7 @@ The RBI's Master Direction on Digital Payment Security Controls (2021) requires 
 
 - **Explainability:** LSTM models are not directly interpretable. Banks must supplement predictions with SHAP (SHapley Additive exPlanations) values or attention mechanisms to satisfy regulatory explanation requirements (RBI, 2021)
 - **Model Risk Management:** Periodic backtesting against confirmed fraud cases, with documented performance degradation thresholds
-- **Data Privacy:** The NPCI-calibrated synthetic approach avoids using real customer data for model development, aligning with data minimization principles under the Digital Personal Data Protection Act, 2023
+- **Data Privacy:** The NPCI-calibrated synthetic approach avoids using real customer data for model development, aligning with data minimization principles under the Digital Personal Data Protection Act, 2023 (Ministry of Electronics and Information Technology, 2023)
 
 #### 6.2.4 Operational Deployment Architecture
 

@@ -30,7 +30,7 @@
 
 > *"On a quiet Monday morning in March 2019, the Reserve Bank of India published its Financial Stability Report. The headline figure stopped every credit officer in every Indian bank: the Gross NPA ratio of Public Sector Banks had breached 11.6%. For every Rs. 100 lent by India's state-owned banks, Rs. 11.60 had simply vanished — not repaid, not recovered, written off. The accumulated NPA stock had reached Rs. 9.62 Lakh Crore — more than the combined annual GDP of Sri Lanka, Nepal, and Bangladesh."*
 
-This is not a hypothetical. This is the macroeconomic backdrop against which this project was conceived. Every fraudulent or ill-assessed loan that reaches the NPA stage costs the bank the principal, the provisioning capital (mandated by RBI), the legal recovery cost, and the operational overhead of an army of collection agents. The total cost of one bad loan is typically 4–6× the original loan amount when all downstream effects are counted.
+This is not a hypothetical. This is the macroeconomic backdrop against which this project was conceived. Every fraudulent or ill-assessed loan that reaches the NPA stage costs the bank the principal, the provisioning capital (mandated by RBI), the legal recovery cost, and the operational overhead of an army of collection agents. The total cost of one bad loan is typically 4–6× the original loan amount when all downstream effects are counted (RBI, 2023; Basel Committee, 2017).
 
 The question this project addresses is both simple and profound: **Can a Deep Learning model, trained on the right combination of internal bank behaviour and external CIBIL data, predict — before disbursement — which borrowers will default?**
 
@@ -70,18 +70,18 @@ The final ANN model achieves **91.23% test accuracy**, **92.68% precision**, **R
 
 **Level 2 — Data Fusion Architecture:** Most commercial credit scorecards rely exclusively on CIBIL bureau data. Our approach uniquely fuses the CIBIL external view with the bank's proprietary internal behavioural data — creating a **360-degree customer credit view** that neither dataset alone can provide. A customer might have an excellent CIBIL score (no bureau-level defaults) but show internal red flags like a recent 400% spike in credit utilisation within the bank — a warning signal visible only in the internal dataset.
 
-**Level 3 — Deep Non-Linearity:** Traditional scorecards (logistic regression, linear discriminant analysis) assign fixed weights to each feature independently. The ANN's three hidden layers learn **complex non-linear interactions** — for example, "high salary AND low CIBIL AND recent SMA (Special Mention Account) flag = high-risk despite salary." These interaction effects are the source of the model's superior discriminatory power (ROC-AUC: 0.9933 vs. ~0.82 for logistic regression on the same data).
+**Level 3 — Deep Non-Linearity:** Traditional scorecards (logistic regression, linear discriminant analysis) assign fixed weights to each feature independently. The ANN's three hidden layers learn **complex non-linear interactions** — for example, "high salary AND low CIBIL AND recent SMA (Special Mention Account) flag = high-risk despite salary." These interaction effects are the source of the model's superior discriminatory power (ROC-AUC: 0.9933 vs. ~0.82 for logistic regression on the same data; see also King & Zeng, 2001 on logistic regression limitations in rare-event data).
 
 ### 2.2 Motivation for the Study
 
 The scale of India's NPA crisis makes this project not merely academically interesting but operationally urgent:
 
-- **FY2018:** Gross NPA ratio of Public Sector Banks peaked at **11.6%** (RBI Financial Stability Report, 2018)
-- **FY2023:** After sustained recovery efforts, GNPAs fell to **5.0%** — but absolute value still exceeds Rs. 6 Lakh Crore
-- **Annual provisioning cost:** Indian banks collectively set aside Rs. 2.2–2.8 Lakh Crore annually in loan loss provisions
-- **RBI Capital Mandate:** Under Basel III norms, every Rs. 100 of NPA requires banks to lock Rs. 15–20 in unproductive capital reserves
+- **FY2018:** Gross NPA ratio of Public Sector Banks peaked at **11.6%** (RBI, 2018)
+- **FY2023:** After sustained recovery efforts, GNPAs fell to **5.0%** — but absolute value still exceeds Rs. 6 Lakh Crore (RBI, 2023)
+- **Annual provisioning cost:** Indian banks collectively set aside Rs. 2.2–2.8 Lakh Crore annually in loan loss provisions (RBI, 2023)
+- **RBI Capital Mandate:** Under Basel III norms, every Rs. 100 of NPA requires banks to lock Rs. 15–20 in unproductive capital reserves (Basel Committee, 2017)
 
-Beyond NPAs, the credit market opportunity is enormous. India's formal credit-to-GDP ratio stands at only **56%** (vs. 170% in China and 220% in the US), implying a multi-trillion-rupee credit gap. The bottleneck is not capital — it is accurate risk assessment. Banks that can underwrite more borrowers with precision, rather than resorting to blanket rejections, can profitably expand their loan books.
+Beyond NPAs, the credit market opportunity is enormous. India's formal credit-to-GDP ratio stands at only **56%** (vs. 170% in China and 220% in the US), implying a multi-trillion-rupee credit gap (NASSCOM, 2023). The bottleneck is not capital — it is accurate risk assessment. Banks that can underwrite more borrowers with precision, rather than resorting to blanket rejections, can profitably expand their loan books.
 
 This model addresses both imperatives simultaneously: **fewer bad loans** (through accurate P4 detection) and **more approved good loans** (by precisely identifying P1/P2 customers who might be rejected under crude scoring systems).
 
@@ -554,7 +554,7 @@ X_test_scaled  = scaler.transform(X_test)          # Transform only
 
 **6.1.3 Dropout as an Ensemble Mechanism**
 
-During inference, Dropout is disabled (via `model.eval()`). This is equivalent to using the geometric mean of an exponentially large ensemble of sub-networks — a key reason why deep learning models generalise better than their training set size alone would suggest.
+During inference, Dropout is disabled (via `model.eval()`). This is equivalent to using the geometric mean of an exponentially large ensemble of sub-networks — a key reason why deep learning models generalise better than their training set size alone would suggest (Srivastava et al., 2014).
 
 ```python
 # Training mode: Dropout active (randomly deactivates 30% of neurons)
@@ -630,7 +630,7 @@ This project makes the following concrete contributions:
 
 ### 7.3 Scope for Future Research
 
-1. **Explainable AI (XAI) Integration:** Overlay SHAP (SHapley Additive exPlanations) values on the ANN outputs to generate per-applicant feature attribution reports. This would satisfy RBI's requirement for explainable credit decisions and allow loan officers to say: "The model flagged this customer as P4 primarily due to 3 delinquencies in the past 6 months and a credit utilisation spike of 82%."
+1. **Explainable AI (XAI) Integration:** Overlay SHAP (SHapley Additive exPlanations) values (Lundberg & Lee, 2017) on the ANN outputs to generate per-applicant feature attribution reports. This would satisfy RBI's requirement for explainable credit decisions and allow loan officers to say: "The model flagged this customer as P4 primarily due to 3 delinquencies in the past 6 months and a credit utilisation spike of 82%."
 
    ```python
    # Future implementation with SHAP
