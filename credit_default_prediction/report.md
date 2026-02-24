@@ -118,7 +118,7 @@ The study deliberately excludes unstructured data (loan officer notes, income ta
 
 #### 4.1.1 Data Sources
 
-The analysis uses two datasets sourced from a leading Indian bank's internal systems and the Credit Information Bureau of India (CIBIL):
+The analysis uses two datasets sourced from a leading Indian bank's internal systems and the Credit Information Bureau of India (CIBIL) (Badole, 2022; CIBIL, 2023):
 
 **Dataset A — Internal Bank Dataset**
 
@@ -297,7 +297,7 @@ X_test_scaled = scaler.transform(X_test)  # transform only, do NOT fit
 
 ### 4.4 Model Architecture
 
-The ANN is a **Multi-Layer Perceptron (MLP)** implemented in PyTorch. The architecture was designed following established best practices for tabular financial data classification:
+The ANN is a **Multi-Layer Perceptron (MLP)** implemented in PyTorch (PyTorch Documentation, 2024). The architecture was designed following established best practices for tabular financial data classification (Goodfellow et al., 2016):
 
 ```python
 import torch
@@ -357,8 +357,8 @@ print(f"Total trainable parameters: {total_params:,}")
 | Component | Choice | Rationale |
 |-----------|--------|-----------|
 | Layer sizes (128→64→32) | Funnel shape | Progressively compress features into abstract risk representations |
-| Activation: ReLU | `max(0, x)` | Prevents vanishing gradients; fast to compute; standard for tabular data |
-| BatchNorm | After each linear layer | Normalises layer inputs; stabilises training; acts as mild regulariser |
+| Activation: ReLU | `max(0, x)` | Prevents vanishing gradients; fast to compute; standard for tabular data (He et al., 2015) |
+| BatchNorm | After each linear layer | Normalises layer inputs; stabilises training; acts as mild regulariser (Ioffe & Szegedy, 2015) |
 | Dropout (0.3, 0.2, 0.2) | Random neuron deactivation | Prevents overfitting on the 40,978 training samples |
 | Output: Linear (no softmax) | Raw logits | `CrossEntropyLoss` applies softmax internally; avoids numerical instability |
 
@@ -589,7 +589,7 @@ The top 20% of P1-probability applicants (those with P1 probability > 92%) can b
 
 **6.2.3 Strategic Capital Allocation for CFO**
 
-The RBI mandates banks maintain capital reserves proportional to their risk-weighted assets. By running the ANN on the **existing live loan book** every quarter, the CFO can:
+The RBI mandates banks maintain capital reserves proportional to their risk-weighted assets (Basel Committee, 2017). By running the ANN on the **existing live loan book** every quarter, the CFO can:
 - Accurately forecast the migration of accounts from P2 → P4 (early warning system)
 - Pre-calculate required provisioning for the next quarter
 - Optimise capital allocation between regulatory reserves and market investments
@@ -642,7 +642,7 @@ This project makes the following concrete contributions:
 
 2. **LSTM-Based Temporal Scoring:** Replace the static ANN with an LSTM that processes a customer's monthly credit behaviour over 12–24 months as a time series, capturing drift patterns invisible to point-in-time models.
 
-3. **Alternative Data Integration:** Extend the feature set to include UPI transaction velocity, e-commerce spending patterns (via account aggregator APIs under RBI's Account Aggregator Framework), and GST filing regularity — sources now legally accessible under India's Open Credit Enablement Network (OCEN) framework.
+3. **Alternative Data Integration:** Extend the feature set to include UPI transaction velocity, e-commerce spending patterns (via account aggregator APIs under RBI's Account Aggregator Framework, RBI, 2021), and GST filing regularity — sources now legally accessible under India's Open Credit Enablement Network (OCEN) framework.
 
 4. **Federated Learning Across Banks:** Train a shared ANN model where each bank's data never leaves its servers — only gradient updates are aggregated. This would create a pan-Indian credit intelligence model without violating data privacy regulations.
 

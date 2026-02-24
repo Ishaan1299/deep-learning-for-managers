@@ -117,7 +117,7 @@ The cuisine list of a Zomato restaurant is a **variable-length sequence of categ
 
 This structure is analogous to text sequences in natural language processing: the order of cuisines may carry meaning (first-listed cuisine often indicates the restaurant's primary offering), and the combination of tokens determines overall meaning.
 
-An LSTM with learned embeddings can:
+An LSTM (Hochreiter & Schmidhuber, 1997) with learned embeddings can:
 1. **Learn dense representations:** Map each of 111 cuisine tokens to a 32-dimensional embedding that captures similarity (North Indian and Mughlai are semantically closer than North Indian and Sushi)
 2. **Process variable-length sequences:** Handle restaurants listing 1 cuisine vs. 8 cuisines in a unified framework
 3. **Capture sequential dependencies:** Learn that "Mughlai" followed by "North Indian" has different implications than "North Indian" followed by "Mughlai"
@@ -155,7 +155,7 @@ An LSTM with learned embeddings can:
 - 5-class restaurant rating classification (Poor / Average / Good / Very Good / Excellent)
 - Indian restaurants only (Country Code = 1 in CSV; all JSON restaurants are India-based Delhi NCR)
 - Features: cuisine token sequence + 5 numerical operational features
-- LSTM training using PyTorch with weighted cross-entropy loss
+- LSTM training using PyTorch (Paszke et al., 2019) with weighted cross-entropy loss
 - Evaluation: accuracy, weighted precision/recall/F1, per-class metrics, confusion matrix
 
 **Out of Scope:**
@@ -395,7 +395,7 @@ The model addresses two heterogeneous input types:
 1. **Cuisine sequence** (sequential categorical tokens) → requires Embedding + LSTM
 2. **Operational features** (dense numerical vector) → requires standard FC processing
 
-The design concatenates the LSTM's learned sequence representation with the numerical features before the final classification layers, allowing both sources of information to jointly inform the prediction.
+The design concatenates the LSTM's learned sequence representation with the numerical features before the final classification layers, allowing both sources of information to jointly inform the prediction, following established deep learning design principles (Goodfellow et al., 2016; He et al., 2016).
 
 #### 4.5.2 Full Architecture
 
@@ -506,7 +506,7 @@ model = ZomatoLSTM(
 #### 4.5.3 Key Architecture Decisions
 
 **Embedding dimension = 32:**
-The cuisine vocabulary has 111 tokens. An embedding dimension of 32 (approximately √111 × 3) provides sufficient capacity to learn meaningful cuisine similarity without over-parameterizing on the available 32,912 training samples. In contrast to word2vec embeddings trained on billions of tokens, cuisine embeddings are learned from scratch on a relatively small dataset.
+The cuisine vocabulary has 111 tokens. An embedding dimension of 32 (approximately √111 × 3) provides sufficient capacity to learn meaningful cuisine similarity without over-parameterizing on the available 32,912 training samples. In contrast to word2vec embeddings (Mikolov et al., 2013) trained on billions of tokens, cuisine embeddings are learned from scratch on a relatively small dataset.
 
 **padding_idx=0:**
 Setting padding_idx=0 ensures that padding tokens (appended to short cuisine sequences) produce zero-vector embeddings that do not update during backpropagation. This prevents the model from learning spurious associations between padding and rating quality.
@@ -572,7 +572,7 @@ for epoch in range(NUM_EPOCHS):
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| Adam lr | 1e-3 | Standard; converges faster than SGD for sparse data (cuisine embeddings are sparse) |
+| Adam lr | 1e-3 | Standard; converges faster than SGD for sparse data (cuisine embeddings are sparse) (Kingma & Ba, 2015) |
 | Weight decay | 1e-5 | L2 regularization prevents embedding vectors from growing unboundedly |
 | StepLR step | 8 | Larger step than UPI model (30 epochs total); allows more exploration before decay |
 | StepLR gamma | 0.5 | Halve LR at epochs 8, 16, 24 |
@@ -774,7 +774,7 @@ A restaurant can list "Biryani" and serve an excellent or terrible biryani. The 
 ### 6.4 Important Considerations in Methodology Development
 
 **Why weighted cross-entropy instead of SMOTE?**
-SMOTE (Synthetic Minority Oversampling Technique) is commonly used for class imbalance in tabular data but does not straightforwardly extend to mixed sequential+numerical inputs. Weighted cross-entropy is directly supported by PyTorch and achieves the same goal (forcing the model to pay more attention to minority classes) without requiring synthetic data generation for a second modality.
+SMOTE (Synthetic Minority Oversampling Technique; Chawla et al., 2002) is commonly used for class imbalance in tabular data but does not straightforwardly extend to mixed sequential+numerical inputs. Weighted cross-entropy is directly supported by PyTorch and achieves the same goal (forcing the model to pay more attention to minority classes) without requiring synthetic data generation for a second modality.
 
 **Why embed_dim=32?**
 Initial experiments with embed_dim=64 showed no accuracy improvement on the validation set but doubled embedding parameter count (from 3,552 to 7,104 parameters). The 32-dimensional embedding appears sufficient to separate the 111 cuisine tokens into meaningful clusters given the training set size.
@@ -809,13 +809,13 @@ For sequences of length 8 (cuisine lists), the benefit of attention pooling over
 
 **Near-Term Extensions:**
 
-1. **Review Text Integration:** Incorporate BERT or DistilBERT sentence embeddings from user reviews as a third input stream alongside cuisine sequences and numerical features. Expected accuracy improvement: 8–12 percentage points (based on analogous studies in hotel review prediction).
+1. **Review Text Integration:** Incorporate BERT or DistilBERT (Devlin et al., 2019) sentence embeddings from user reviews as a third input stream alongside cuisine sequences and numerical features. Expected accuracy improvement: 8–12 percentage points (based on analogous studies in hotel review prediction).
 
 2. **City-Level Embeddings:** Learn city embeddings from the training data and concatenate them with the cuisine LSTM output. This would capture the geographic heterogeneity currently missed (the same cuisine combination predicts differently in Mumbai vs. Tier-2 cities).
 
 3. **Ordinal Classification:** Reframe the problem as ordinal regression (Poor < Average < Good < Very Good < Excellent) using cumulative link models or ordinal cross-entropy loss. This would prevent nonsensical predictions like classifying a restaurant directly from "Poor" to "Excellent."
 
-4. **Transformer Architecture:** Replace the LSTM with a Transformer encoder (self-attention over the cuisine sequence). For sequences of length 8, a 2-layer Transformer with 4 attention heads would add minimal computational overhead while potentially capturing non-sequential interaction patterns (e.g., "North Indian" and "Chinese" together, regardless of order, signal a particular restaurant type).
+4. **Transformer Architecture:** Replace the LSTM with a Transformer encoder architecture (Vaswani et al., 2017), applying self-attention over the cuisine sequence. For sequences of length 8, a 2-layer Transformer with 4 attention heads would add minimal computational overhead while potentially capturing non-sequential interaction patterns (e.g., "North Indian" and "Chinese" together, regardless of order, signal a particular restaurant type).
 
 5. **Temporal Rating Prediction:** Extend to predict how a restaurant's rating will *change* over the next 6 months, enabling dynamic quality monitoring rather than static classification.
 

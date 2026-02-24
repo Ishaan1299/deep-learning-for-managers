@@ -55,7 +55,7 @@ The report is structured as follows:
 | Section 6 | Discussion — why LSTM outperforms rule-based systems, managerial implications, operational deployment considerations |
 | Section 7 | Conclusions — contributions, limitations, and directions for future research |
 
-The entire implementation uses **PyTorch** and is reproducible from three sequential scripts: `data_prep.py`, `src/models/lstm_model.py`, and `plot_results.py`.
+The entire implementation uses **PyTorch** (Paszke et al., 2019) and is reproducible from three sequential scripts: `data_prep.py`, `src/models/lstm_model.py`, and `plot_results.py`.
 
 ### 1.3 Key Metrics at a Glance
 
@@ -409,7 +409,7 @@ Stratification ensures the fraud/legitimate ratio is identical in both splits, p
 
 #### 4.4.1 Why LSTM for Fraud Detection?
 
-Standard Recurrent Neural Networks (RNNs) suffer from the **vanishing gradient problem**: gradients for earlier time steps become negligibly small during backpropagation, making it difficult to learn dependencies spanning more than a few steps (Hochreiter & Schmidhuber, 1997). The ATO pattern requires the model to connect a device change at step 9 to large transfers at steps 13–15, a span of 6 steps. LSTM's gating mechanism — comprising forget, input, and output gates — explicitly controls what information is retained in the cell state, enabling learning of dependencies across the full 15-step sequence.
+Standard Recurrent Neural Networks (RNNs) suffer from the **vanishing gradient problem**: gradients for earlier time steps become negligibly small during backpropagation, making it difficult to learn dependencies spanning more than a few steps (Hochreiter & Schmidhuber, 1997; Goodfellow et al., 2016). The ATO pattern requires the model to connect a device change at step 9 to large transfers at steps 13–15, a span of 6 steps. LSTM's gating mechanism — comprising forget, input, and output gates — explicitly controls what information is retained in the cell state, enabling learning of dependencies across the full 15-step sequence.
 
 **LSTM gate equations:**
 ```
@@ -525,7 +525,7 @@ for epoch in range(NUM_EPOCHS):
 
 | Choice | Value | Rationale |
 |--------|-------|-----------|
-| Optimizer | Adam | Adaptive learning rates; faster convergence than SGD for sequence models |
+| Optimizer | Adam | Adaptive learning rates; faster convergence than SGD for sequence models (Kingma & Ba, 2015) |
 | Learning rate | 1e-3 | Standard Adam default; works well with batch norm |
 | Weight decay | 1e-5 | L2 regularization to prevent weight blow-up |
 | LR scheduler | StepLR (step=5, gamma=0.5) | Halve LR every 5 epochs; prevents oscillation in later training |
@@ -643,7 +643,7 @@ The most significant lesson was the **session-level labeling design**: when each
 
 ### 6.1 Why LSTM Outperforms Rule-Based Systems
 
-The current industry standard for UPI fraud detection is a combination of rule-based systems and basic machine learning (logistic regression, gradient boosting) applied at the individual transaction level (Jain & Khanna, 2020). The LSTM architecture demonstrated in this project offers three fundamental advantages:
+The current industry standard for UPI fraud detection is a combination of rule-based systems and basic machine learning (logistic regression, gradient boosting) applied at the individual transaction level (Jain & Khanna, 2020; Akhtar et al., 2022). The LSTM architecture demonstrated in this project offers three fundamental advantages:
 
 **1. Temporal Context Aggregation**
 Traditional rules evaluate each transaction independently. A rule like "flag if amount > Rs. 1 lakh and payee is new" will miss the ATO pattern entirely if amounts are moderate. The LSTM's hidden state accumulates evidence across all 15 steps — the device change at step 9 is "remembered" when evaluating steps 13–15, even though no single step is individually suspicious.
@@ -770,8 +770,8 @@ This project makes the following contributions:
 ### 7.3 Scope for Future Research
 
 **Near-Term Extensions:**
-1. **Graph Neural Network Integration:** Incorporate payee network features — fraudulent payees often receive transfers from multiple compromised accounts within a short window. GNN + LSTM hybrid architectures have shown significant uplift in financial fraud (Wang et al., 2021)
-2. **Attention Mechanisms:** Add temporal attention to identify which steps within a session contribute most to the fraud prediction, providing model explainability for regulatory compliance
+1. **Graph Neural Network Integration:** Incorporate payee network features — fraudulent payees often receive transfers from multiple compromised accounts within a short window. GNN + LSTM hybrid architectures have shown significant uplift in financial fraud (Wang et al., 2021; Xu et al., 2019)
+2. **Bidirectional and Attentional LSTM:** Extend the architecture with bidirectional processing (Schuster & Paliwal, 1997) or add temporal attention to identify which steps within a session contribute most to the fraud prediction, providing model explainability for regulatory compliance
 3. **Federated Learning:** Enable banks to collaboratively train a fraud detection model without sharing customer data, addressing the data availability constraint while satisfying data privacy requirements
 4. **Online Learning:** Extend the model to update continuously as new confirmed fraud cases arrive, reducing lag between new fraud pattern emergence and detection capability
 
@@ -783,7 +783,7 @@ This project makes the following contributions:
 
 ### 7.4 Final Remarks
 
-India's UPI ecosystem processes more transactions per month than the entire global credit card network processes in a day. Protecting this infrastructure is not merely a technical challenge — it is a prerequisite for sustaining the digital inclusion mission that UPI represents. For the hundreds of millions of Indians who use UPI as their primary banking interface, an effective fraud detection system is the difference between a trusted financial tool and a liability.
+India's UPI ecosystem processes more transactions per month than the entire global credit card network processes in a day (NPCI Monthly Statistics, 2024). Protecting this infrastructure is not merely a technical challenge — it is a prerequisite for sustaining the digital inclusion mission that UPI represents. For the hundreds of millions of Indians who use UPI as their primary banking interface, an effective fraud detection system is the difference between a trusted financial tool and a liability.
 
 This project demonstrates that LSTM networks, calibrated to real NPCI statistics and designed with operational constraints in mind, can achieve fraud detection performance (ROC-AUC 88.75%) that meaningfully exceeds rule-based baselines while remaining computationally deployable. The path from this academic prototype to production deployment is well-defined: real transaction data, network graph features, regulatory explainability, and continuous retraining are the remaining gaps — all addressable within standard bank technology programs.
 
